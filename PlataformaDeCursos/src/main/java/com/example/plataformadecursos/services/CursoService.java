@@ -2,7 +2,10 @@ package com.example.plataformadecursos.services;
 
 import com.example.plataformadecursos.DTOs.AlunoRequest;
 import com.example.plataformadecursos.DTOs.AlunoResponse;
+import com.example.plataformadecursos.DTOs.CursoRequest;
+import com.example.plataformadecursos.DTOs.CursoResponse;
 import com.example.plataformadecursos.entities.Aluno;
+import com.example.plataformadecursos.entities.Curso;
 import com.example.plataformadecursos.repositories.AlunoRepository;
 import com.example.plataformadecursos.repositories.CursoRepository;
 import org.springframework.stereotype.Service;
@@ -20,48 +23,48 @@ public class CursoService {
         this.cursoRepository = cursoRepository;
     }
 
-    public String createCourse(AlunoRequest request) {
-        Aluno aluno = new Aluno(
+    public String createCourse(CursoRequest request) {
+        Curso curso = new Curso(
                 request.getNome(),
-                request.getEmail()
+                request.getCargaHoraria()
         );
 
-        alunoRepository.save(aluno);
-        return "Aluno criado com sucesso!";
+        cursoRepository.save(curso);
+        return "Curso criado com sucesso!";
     }
 
-    public List<AlunoResponse> listUsers(){
-        return alunoRepository.findAll().stream().map(usuario -> new AlunoResponse(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail()
+    public List<CursoResponse> listCourses(){
+        return cursoRepository.findAll().stream().map(curso -> new CursoResponse(
+                curso.getId(),
+                curso.getNome(),
+                curso.getCargaHoraria()
         )).toList();
     }
 
-    public AlunoResponse findId(Long id){
-        Optional<Aluno> aluno = alunoRepository.findById(id);
-        AlunoResponse response = new AlunoResponse(aluno);
+    public CursoResponse findId(Long id){
+        Optional<Curso> curso = cursoRepository.findById(id);
+        CursoResponse response = new CursoResponse(curso);
 
         return response;
     }
 
-    public String alterUser(Long id, AlunoRequest request){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow();
-        aluno.setNome(request.getNome());
-        aluno.setEmail(request.getEmail());
+    public String alterCourse(Long id, CursoRequest request){
+        Curso curso = cursoRepository.findById(id).orElseThrow();
+        curso.setNome(request.getNome());
+        curso.setCargaHoraria(request.getCargaHoraria());
 
-        alunoRepository.save(aluno);
-        return "Dados do aluno alterado com sucesso!";
+        cursoRepository.save(curso);
+        return "Dados do curso alterado com sucesso!";
     }
 
-    public String deleteUser(Long id){
-        Optional<Aluno> contato = alunoRepository.findById(id);
+    public String deleteCourse(Long id){
+        Optional<Curso> curso = cursoRepository.findById(id);
 
-        if (contato.isEmpty()) {
-            return "Aluno Inexistente!";
+        if (curso.isEmpty()) {
+            return "Curso Inexistente!";
         } else {
-            alunoRepository.deleteById(id);
-            return "Aluno deletado do sistema!";
+            cursoRepository.deleteById(id);
+            return "Curso deletado do sistema!";
         }
     }
 }

@@ -3,10 +3,12 @@ package com.example.plataformadecursos.services;
 import com.example.plataformadecursos.DTOs.AlunoRequest;
 import com.example.plataformadecursos.DTOs.AlunoResponse;
 import com.example.plataformadecursos.entities.Aluno;
+import com.example.plataformadecursos.entities.Curso;
 import com.example.plataformadecursos.repositories.AlunoRepository;
 import com.example.plataformadecursos.repositories.CursoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +29,41 @@ public class AlunoService {
                 request.getEmail()
         );
 
+        Curso curso = cursoRepository.getReferenceById(request.getIdCurso());
+        aluno.getCursos().add(curso);
+
         alunoRepository.save(aluno);
         return "Aluno criado com sucesso!";
     }
 
-    public List<AlunoResponse> listUsers(){
-        return alunoRepository.findAll().stream().map(usuario -> new AlunoResponse(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail()
-        )).toList();
+//    public List<AlunoResponse> listUsers(){
+//        return alunoRepository.findAll().stream().map(usuario -> new AlunoResponse(
+//                usuario.getId(),
+//                usuario.getNome(),
+//                usuario.getEmail()
+//                // usuario.getCursos()
+//
+//        )).toList();
+//    }
+
+    public List<AlunoResponse> listUsers() {
+        List<AlunoResponse> list = new ArrayList();
+        List<Aluno> alunos = alunoRepository.findAll();
+
+
+        for (Aluno aluno: alunos) {
+            AlunoResponse response = new AlunoResponse();
+            response.setId(aluno.getId());
+            response.setNome(aluno.getNome());
+            response.setEmail(aluno.getEmail());
+            for (Curso curso : aluno.getCursos()){
+                response.addCategoria(curso.getNome());
+               // response.setCategoriaList(curso.getNome());
+            }
+            list.add(response);
+        }
+
+        return list;
     }
 
     public AlunoResponse findId(Long id){
@@ -56,9 +83,9 @@ public class AlunoService {
     }
 
     public String deleteUser(Long id){
-        Optional<Aluno> contato = alunoRepository.findById(id);
+        Optional<Aluno> aluno = alunoRepository.findById(id);
 
-        if (contato.isEmpty()) {
+        if (aluno.isEmpty()) {
             return "Aluno Inexistente!";
         } else {
             alunoRepository.deleteById(id);

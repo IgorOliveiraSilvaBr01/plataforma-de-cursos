@@ -19,4 +19,5 @@ public class AlunoRequest {
     @Email
     @Column(length = 150)
     private String email;
+    private long idCurso;
 }
