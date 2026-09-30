@@ -29,36 +29,22 @@ public class AlunoService {
                 request.getEmail()
         );
 
-        Curso curso = cursoRepository.getReferenceById(request.getIdCurso());
-        aluno.getCursos().add(curso);
-
         alunoRepository.save(aluno);
         return "Aluno criado com sucesso!";
     }
-
-//    public List<AlunoResponse> listUsers(){
-//        return alunoRepository.findAll().stream().map(usuario -> new AlunoResponse(
-//                usuario.getId(),
-//                usuario.getNome(),
-//                usuario.getEmail()
-//                // usuario.getCursos()
-//
-//        )).toList();
-//    }
 
     public List<AlunoResponse> listUsers() {
         List<AlunoResponse> list = new ArrayList();
         List<Aluno> alunos = alunoRepository.findAll();
 
-
-        for (Aluno aluno: alunos) {
+        for (Aluno aluno : alunos) {
             AlunoResponse response = new AlunoResponse();
             response.setId(aluno.getId());
             response.setNome(aluno.getNome());
             response.setEmail(aluno.getEmail());
-            for (Curso curso : aluno.getCursos()){
-                response.addCategoria(curso.getNome());
-               // response.setCategoriaList(curso.getNome());
+            for (Curso curso : aluno.getCursos()) {
+                response.addList(curso.getNome());
+                // response.setCategoriaList(curso.getNome());
             }
             list.add(response);
         }
@@ -66,30 +52,37 @@ public class AlunoService {
         return list;
     }
 
-    public AlunoResponse findId(Long id){
-        Optional<Aluno> aluno = alunoRepository.findById(id);
-        AlunoResponse response = new AlunoResponse(aluno);
+    public AlunoResponse findIdUser(Long id) {
+        AlunoResponse response = new AlunoResponse();
+        Aluno aluno = alunoRepository.findById(id).orElseThrow();
+
+        response.setId(aluno.getId());
+        response.setNome(aluno.getNome());
+        response.setEmail(aluno.getEmail());
+        for (Curso curso : aluno.getCursos()) {
+            response.addList(curso.getNome());
+        }
 
         return response;
     }
 
-    public String alterUser(Long id, AlunoRequest request){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow();
-        aluno.setNome(request.getNome());
-        aluno.setEmail(request.getEmail());
+public String alterUser(Long id, AlunoRequest request) {
+    Aluno aluno = alunoRepository.findById(id).orElseThrow();
+    aluno.setNome(request.getNome());
+    aluno.setEmail(request.getEmail());
 
-        alunoRepository.save(aluno);
-        return "Dados do aluno alterado com sucesso!";
+    alunoRepository.save(aluno);
+    return "Dados do aluno alterado com sucesso!";
+}
+
+public String deleteUser(Long id) {
+    Optional<Aluno> aluno = alunoRepository.findById(id);
+
+    if (aluno.isEmpty()) {
+        return "Aluno Inexistente!";
+    } else {
+        alunoRepository.deleteById(id);
+        return "Aluno deletado do sistema!";
     }
-
-    public String deleteUser(Long id){
-        Optional<Aluno> aluno = alunoRepository.findById(id);
-
-        if (aluno.isEmpty()) {
-            return "Aluno Inexistente!";
-        } else {
-            alunoRepository.deleteById(id);
-            return "Aluno deletado do sistema!";
-        }
-    }
+}
 }

@@ -28,7 +28,7 @@ public class AlunoResponse {
         email = aluno.get().getEmail();
     }
 
-    public void addCategoria(String categoria) {
-        this.cursosList.add(categoria);
+    public void addList(String curso) {
+        this.cursosList.add(curso);
     }
 }

@@ -4,6 +4,7 @@ import com.example.plataformadecursos.DTOs.AlunoRequest;
 import com.example.plataformadecursos.DTOs.AlunoResponse;
 import com.example.plataformadecursos.DTOs.CursoRequest;
 import com.example.plataformadecursos.DTOs.CursoResponse;
+import com.example.plataformadecursos.entities.Curso;
 import com.example.plataformadecursos.services.CursoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class CursoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CursoResponse> findId(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(cursoService.findId(id));
+        return ResponseEntity.ok(cursoService.findIdCourse(id));
     }
 
     @PutMapping("/{id}")

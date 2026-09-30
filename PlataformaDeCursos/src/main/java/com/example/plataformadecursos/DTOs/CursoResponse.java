@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,7 +19,7 @@ public class CursoResponse {
     private long id;
     private String nome;
     private String cargaHoraria;
-    private Set<Aluno> Aluno;
+    private List<String> alunosList = new ArrayList();
 
     public CursoResponse(long id, String nome, String cargaHoraria) {
         this.id = id;
@@ -29,5 +31,9 @@ public class CursoResponse {
         id = curso.get().getId();
         nome = curso.get().getNome();
         cargaHoraria = curso.get().getCargaHoraria();
+    }
+
+    public void addAluno(String aluno) {
+        this.alunosList.add(aluno);
     }
 }

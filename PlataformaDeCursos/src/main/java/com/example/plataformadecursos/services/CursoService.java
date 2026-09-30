@@ -9,6 +9,8 @@ import com.example.plataformadecursos.entities.Curso;
 import com.example.plataformadecursos.repositories.AlunoRepository;
 import com.example.plataformadecursos.repositories.CursoRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,17 +35,35 @@ public class CursoService {
         return "Curso criado com sucesso!";
     }
 
-    public List<CursoResponse> listCourses(){
-        return cursoRepository.findAll().stream().map(curso -> new CursoResponse(
-                curso.getId(),
-                curso.getNome(),
-                curso.getCargaHoraria()
-        )).toList();
+    public List<CursoResponse> listCourses() {
+        List<CursoResponse> list = new ArrayList();
+        List<Curso> cursos = cursoRepository.findAll();
+
+
+        for (Curso curso: cursos) {
+            CursoResponse response = new CursoResponse();
+            response.setId(curso.getId());
+            response.setNome(curso.getNome());
+            response.setCargaHoraria(curso.getCargaHoraria());
+            for (Aluno aluno : curso.getAlunos()){
+                response.addAluno(aluno.getNome());
+            }
+            list.add(response);
+        }
+
+        return list;
     }
 
-    public CursoResponse findId(Long id){
-        Optional<Curso> curso = cursoRepository.findById(id);
-        CursoResponse response = new CursoResponse(curso);
+    public CursoResponse findIdCourse(Long id) {
+        CursoResponse response = new CursoResponse();
+        Curso curso = cursoRepository.findById(id).orElseThrow();
+
+        response.setId(curso.getId());
+        response.setNome(curso.getNome());
+        response.setCargaHoraria(curso.getCargaHoraria());
+        for (Aluno aluno : curso.getAlunos()) {
+            response.addAluno(curso.getNome());
+        }
 
         return response;
     }
